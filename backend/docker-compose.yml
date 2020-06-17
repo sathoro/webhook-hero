@@ -1,0 +1,22 @@
+version: '3'
+services:
+  db:
+    image: postgres:12-alpine
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5429:5432
+  web:
+    build:
+      context: .
+    depends_on:
+      - db
+    volumes:
+      - ./:/app
+    command: bash docker-compose-up.sh
+    ports:
+      - 8000:8000
+volumes:
+  pgdata:
