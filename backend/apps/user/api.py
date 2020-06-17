@@ -1,4 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework.response import Response
@@ -23,6 +25,11 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         if data["password_1"] != data["password_2"]:
             raise serializers.ValidationError("Passwords do not match")
+
+        try:
+            validate_password(data["password_1"])
+        except ValidationError as e:
+            raise serializers.ValidationError(e.messages[0])
 
         if User.objects.filter(email=data["email"]).exists():
             raise serializers.ValidationError("A user with that email already exists")

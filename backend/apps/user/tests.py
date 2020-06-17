@@ -14,8 +14,8 @@ class RegisterTests(APITestCase):
             "email": "foo@bar.com",
             "first_name": "Foo",
             "last_name": "Bar",
-            "password_1": "foo",
-            "password_2": "foo",
+            "password_1": "foo-123456",
+            "password_2": "foo-123456",
         }
 
         response = self.client.post(url, data, format="json")
@@ -26,8 +26,25 @@ class RegisterTests(APITestCase):
 
         user = User.objects.first()
 
-        self.assertTrue(check_password("foo", user.password))
+        self.assertTrue(check_password("foo-123456", user.password))
         self.assertEqual(response.data, {"id": str(user.id), "email": user.email})
+
+    def test_password_too_short(self):
+        url = reverse("register")
+        data = {
+            "email": "foo@bar.com",
+            "first_name": "Foo",
+            "last_name": "Bar",
+            "password_1": "foo",
+            "password_2": "foo",
+        }
+
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data, {"non_field_errors": ["This password is too short. It must contain at least 8 characters."]}
+        )
 
 
 class LoginTests(APITestCase):
