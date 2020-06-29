@@ -8,8 +8,6 @@ until PGPASSWORD=postgres psql -h "db" -U "postgres" -c '\q'; do
     sleep 1
 done
 
-python manage.py makemigrations
-
 yes "yes" | python manage.py migrate
 
 python manage.py runserver 0.0.0.0:8000

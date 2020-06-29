@@ -5,10 +5,11 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from apps.user.models import User
+from apps.core.testing import CreateUserAPITestCaseMixin
 
 
 class RegisterTests(APITestCase):
-    def test_create_account(self):
+    def test_create_user(self):
         url = reverse("register")
         data = {
             "email": "foo@bar.com",
@@ -72,10 +73,9 @@ class LoginTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-class LogoutTests(APITestCase):
+class LogoutTests(APITestCase, CreateUserAPITestCaseMixin):
     def test_logout(self):
-        user = User.objects.create_user("foo@bar.com", password="foo")
-        self.client.login(username=user.email, password="foo")
+        user = self.create_user_and_login()
 
         url = reverse("logout")
         response = self.client.post(url, format="json")
@@ -84,10 +84,9 @@ class LogoutTests(APITestCase):
         self.assertTrue(self.client.session.is_empty)
 
 
-class CurrentUserTests(APITestCase):
+class CurrentUserTests(APITestCase, CreateUserAPITestCaseMixin):
     def test_get_current_user_info(self):
-        user = User.objects.create_user("foo@bar.com", password="foo", first_name="Foo", last_name="Bar")
-        self.client.login(username=user.email, password="foo")
+        user = self.create_user_and_login()
 
         url = reverse("me")
         response = self.client.get(url, format="json")

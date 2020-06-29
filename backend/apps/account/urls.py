@@ -1,3 +1,9 @@
-from django.urls import path
+from rest_framework import routers
 
-urlpatterns = []
+from .api import AccountViewSet
+
+
+router = routers.SimpleRouter(trailing_slash=False)
+router.register(r"api/v1/account", AccountViewSet, "account")
+
+urlpatterns = router.urls

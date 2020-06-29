@@ -23,7 +23,7 @@ SECRET_KEY = "9%y)fi&4l5xfgvt5m+@54^=vl!ie=-^=$u#591-@fetbfh20%r"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "localhost:8000"]
 
 # Application definition
 
@@ -38,13 +38,13 @@ INSTALLED_APPS = [
     "apps.core",
     "apps.user",
     "apps.account",
+    "apps.webhook",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -119,8 +119,26 @@ STATIC_URL = "/static/"
 AUTH_USER_MODEL = "user.User"
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.SessionAuthentication"],
+    "DEFAULT_AUTHENTICATION_CLASSES": ["apps.core.authentication.SessionAuthenticationDisableCSRF"],
     "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser"],
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+        "apps.account.permissions.HasAccountPermissions",
+    ],
+    "DEFAULT_FILTER_BACKENDS": ("apps.account.filters.ChildOfAccountFilterBackend"),
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
+
+# only enable the browsable API renderer in debug mode
+if not DEBUG:
+    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = ["rest_framework.renderers.JSONRenderer"]
+
+CELERY_BROKER_URL = "amqp://guest:guest@rabbitmq:5672"
+
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+AWS_REGION_NAME = os.environ.get("AWS_REGION_NAME")
+
+ALLOW_PUBLIC_REGISTRATION = True
+
+APPEND_SLASH = False

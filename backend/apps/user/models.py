@@ -1,9 +1,8 @@
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.base_user import BaseUserManager
-from django.utils import timezone
 from django.db import models
 
-from apps.core.models import UUIDModel
+from apps.core.models import UUIDModel, CreatedTimestampModel
 
 
 class UserManager(BaseUserManager):
@@ -37,11 +36,9 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-class User(UUIDModel, AbstractBaseUser):
+class User(UUIDModel, CreatedTimestampModel, AbstractBaseUser):
     email = models.EmailField(unique=True)
-    first_name = models.TextField("First Name")
-    last_name = models.TextField("Last Name")
-    created_at = models.DateTimeField(auto_now_add=timezone.now)
+    name = models.TextField()
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
@@ -50,3 +47,5 @@ class User(UUIDModel, AbstractBaseUser):
     REQUIRED_FIELDS = []
 
     objects = UserManager()
+
+    accounts = models.ManyToManyField("account.Account", through="account.AccountMember")
