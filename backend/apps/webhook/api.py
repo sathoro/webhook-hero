@@ -41,6 +41,12 @@ class DestinationViewSet(viewsets.ModelViewSet):
         serializer.save(id=destination_id, account_id=self.request.account_id, sqs_queue_url=queue["QueueUrl"])
 
 
+class WebhookNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Webhook
+        fields = ("id", "name")
+
+
 class WebhookSerializer(serializers.ModelSerializer):
     destinations = DestinationSerializer(many=True, read_only=True)
 
@@ -61,9 +67,11 @@ class WebhookViewSet(viewsets.ModelViewSet):
 
 
 class IncomingMessageSerializer(serializers.ModelSerializer):
+    webhook = WebhookNameSerializer()
+
     class Meta:
         model = IncomingMessage
-        fields = ("id", "webhook", "method", "headers", "query_params", "body", "created_at")
+        fields = ("id", "webhook", "method", "headers", "query_params", "body", "created_at", "webhook")
 
 
 class IncomingMessageViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
@@ -72,7 +80,7 @@ class IncomingMessageViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, v
     filterset_fields = ["webhook"]
     ordering_fields = ["created_at"]
     ordering = ["-created_at"]
-    queryset = IncomingMessage.objects
+    queryset = IncomingMessage.objects.select_related("webhook")
 
     def perform_create(self, serializer):
         serializer.save(account_id=self.request.account_id)
