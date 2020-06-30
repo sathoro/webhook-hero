@@ -25,11 +25,11 @@ export default function AccountAvatar({ onClick, name, onClickAway }) {
 
   return (
     <button
-      class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-orange-500 focus:outline-none focus:border-gray-300"
+      className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-orange-500 focus:outline-none focus:border-gray-300"
       onClick={onClick}
       ref={ref}
     >
-      <span class="text-md font-medium leading-none text-white">
+      <span className="text-md font-medium leading-none text-white">
         {getInitialsFromName(name)}
       </span>
     </button>

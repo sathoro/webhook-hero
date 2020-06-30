@@ -20,10 +20,10 @@ export default function Nav() {
   const { user } = useAppState();
 
   return (
-    <nav class="bg-gray-800">
-      <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-14">
-          <div class="flex">
+    <nav className="bg-gray-800">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14">
+          <div className="flex">
             {user ? (
               <>
                 <StyledNavLink to="/dashboard" activeClassName="active">
@@ -58,7 +58,7 @@ export default function Nav() {
               </>
             )}
           </div>
-          <div class="relative">
+          <div className="relative">
             {user ? (
               <AccountAvatar
                 name={user.name}
@@ -68,19 +68,25 @@ export default function Nav() {
             ) : null}
 
             <div
-              class={`origin-top-right absolute right-0 mt-1 w-48 rounded-md shadow-lg ${
+              className={`origin-top-right absolute right-0 mt-1 w-48 rounded-md shadow-lg ${
                 showProfileDropdown ? "" : "hidden"
               }`}
             >
               <div
-                class="py-1 rounded-md bg-white shadow-xs"
+                className="py-1 rounded-md bg-white shadow-xs"
                 role="menu"
                 aria-orientation="vertical"
-                aria-labelledby="user-menu"
               >
                 <Link
+                  to="/settings"
+                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                  role="menuitem"
+                >
+                  Settings
+                </Link>
+                <Link
                   to="/logout"
-                  class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                   role="menuitem"
                 >
                   Logout

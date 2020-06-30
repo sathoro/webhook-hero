@@ -6,11 +6,11 @@ export default function Error({ error }) {
   }
 
   return (
-    <div class="rounded-md bg-red-50 p-4 mb-6">
-      <div class="flex">
-        <div class="flex-shrink-0">
+    <div className="rounded-md bg-red-50 p-4 mb-6">
+      <div className="flex">
+        <div className="flex-shrink-0">
           <svg
-            class="h-5 w-5 text-red-400"
+            className="h-5 w-5 text-red-400"
             viewBox="0 0 20 20"
             fill="currentColor"
           >
@@ -21,9 +21,9 @@ export default function Error({ error }) {
             />
           </svg>
         </div>
-        <div class="ml-3">
-          <div class="text-sm leading-5 text-red-700">
-            <ul class="list-disc pl-5">
+        <div className="ml-3">
+          <div className="text-sm leading-5 text-red-700">
+            <ul className="list-disc pl-5">
               {Object.entries(error).map(([key, value], i) => (
                 <li key={i} className={i > 0 ? "mt-1" : ""}>
                   {key}: {value[0]}
